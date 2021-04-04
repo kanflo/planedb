@@ -40,13 +40,15 @@ cache_max_age = 120
 # Clean the cache every cache_clean_interval seconds
 cache_clean_interval = 300
 
+# Enable or disable cache
+use_caching = True
+
 # Timestamp of last cache clean
 last_cache_clean = time.time()
 
 # Dicionaries keyed on "icao24" containing "fetched_ts", "hit_ts" and "data" (data may be 'False')
 cache: Dict[str, Dict[str, str]] = {}
 
-# TODO: Make caching configurable
 def _cache_clean():
     global last_cache_clean
     if time.time() - last_cache_clean > cache_clean_interval:
@@ -70,6 +72,8 @@ def _cache_lookup(what: str) -> Union[Dict, None]:
     Returns:
         Union[Dict, None] -- Dict describing what we found or None if data not in cache
     """
+    if not use_caching:
+        return None
     _cache_clean()
     global cache
     if what in cache:
@@ -83,14 +87,18 @@ def _cache_lookup(what: str) -> Union[Dict, None]:
     return None
 
 def _cache_add(icao24: str, data: Dict):
+    if not use_caching:
+        return None
     global cache
     cache[icao24] = {"fetched_ts" : time.time(), "hit_ts" : time.time(), "data" : data}
 
-def init(_hostname: str, _port: int = 31541):
+def init(_hostname: str, _port: int = 31541, _use_caching = True):
+    global use_caching
     global hostname
     global port
     hostname = _hostname
     port = _port
+    use_caching = _use_caching
 
 def lookup_aircraft_icao24(icao24: str):
     data = _cache_lookup(icao24)
