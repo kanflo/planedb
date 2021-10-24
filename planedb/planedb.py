@@ -289,6 +289,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: %s [-l] [-g icao24] [-c icao24] [-d icao24] [-q icao24] [-q reg] [-r callsign] [-o airline] [-a airport] [-i icao24 [ -m <manufacturer> -t <type> -o <operator> -r <registration> -s <data source> -I <image url> ] ]" % sys.argv[0])
         print("       -g <icao24>        Open Google Image Search for <icao24> using its PlaneDB registration")
+        print("       -l                 List image checks")
         print("       -c <icao24>        Add image check")
         print("       -d <icao24>        Delete image check")
         print("       -q <icao24>        Query PlaneDB for aircraft")
