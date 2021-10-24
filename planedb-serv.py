@@ -176,6 +176,8 @@ def update_aircraft(icao24: str, post_dict: dict) -> bool:
     obj.updated_on = datetime.datetime.utcnow()
     try:
         obj.save()
+        # Remove image check if one exists for this plane
+        delete_imagecheck(icao24)
         return True
     except KeyError as e:
         logging.error("Exception occurred", exc_info=True)
