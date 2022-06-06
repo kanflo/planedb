@@ -1,1 +1,1 @@
-from . import planedb
+from .planedb import planedb
