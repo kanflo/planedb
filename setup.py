@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='planedb',
-      version='0.1',
+      version='0.2',
       description='a plane database',
       long_description=readme(),
       url='https://github.com/kanflo/planedb.git',
