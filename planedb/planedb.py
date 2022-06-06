@@ -110,6 +110,8 @@ def lookup_aircraft_icao24(icao24: str):
             data = ast.literal_eval(resp.text) # Works for single quotes
             _cache_add(icao24, data)
             return data
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError as e:
         logging.error("Failed to connect to planedb host %s" % hostname)
     _cache_add(icao24, False)
@@ -125,6 +127,8 @@ def lookup_aircraft_registration(registration: str):
             data = ast.literal_eval(resp.text) # Works for single quotes
             _cache_add(registration, data)
             return data
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError as e:
         logging.error("Failed to connect to planedb host %s" % hostname)
     _cache_add(registration, False)
@@ -133,9 +137,12 @@ def lookup_aircraft_registration(registration: str):
 def update_aircraft(icao24: str, data: Dict):
     url = "http://%s:%d/aircraft/icao24/%s" % (hostname, port, icao24)
     try:
+        data["icao24"] = icao24
         resp = req.post(url, data = data)
         if resp.status_code == 200:
             return resp.text == "OK"
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     return False
@@ -149,6 +156,8 @@ def lookup_airport(icao24: str):
         if resp.status_code == 200:
             _cache_add(icao24, data)
             return ast.literal_eval(resp.text) # Works for single quotes
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     _cache_add(icao24, False)
@@ -157,9 +166,12 @@ def lookup_airport(icao24: str):
 def update_airport(icao24: str, data: Dict):
     url = "http://%s:%d/airport/%s" % (hostname, port, icao24)
     try:
+        data["icao24"] = icao24
         resp = req.post(url, data = data)
         if resp.status_code == 200:
             return resp.text == "OK"
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     return False
@@ -174,6 +186,8 @@ def lookup_airline(icao24: str):
         if resp.status_code == 200:
             _cache_add(icao24, data)
             return ast.literal_eval(resp.text) # Works for single quotes
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     _cache_add(icao24, False)
@@ -182,9 +196,12 @@ def lookup_airline(icao24: str):
 def update_airline(icao24: str, data: Dict):
     url = "http://%s:%d/airline/%s" % (hostname, port, icao24)
     try:
+        data["icao24"] = icao24
         resp = req.post(url, data = data)
         if resp.status_code == 200:
             return resp.text == "OK"
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     return False
@@ -198,6 +215,8 @@ def lookup_route(callsign: str):
         if resp.status_code == 200:
             _cache_add(callsign, data)
             return ast.literal_eval(resp.text) # Works for single quotes
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     _cache_add(callsign, False)
@@ -206,12 +225,12 @@ def lookup_route(callsign: str):
 def update_route(callsign: str, data: Dict):
     url = "http://%s:%d/route/%s" % (hostname, port, callsign)
     try:
+        data["icao24"] = icao24
         resp = req.post(url, data = data)
         if resp.status_code == 200:
             return resp.text == "OK"
         else:
-            print(url)
-            print(resp.status_code, resp.text)
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     return False
@@ -222,6 +241,8 @@ def add_imagecheck(icao24: str):
         resp = req.post(url)
         if resp.status_code == 200:
             return resp.text == "OK"
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     return False
@@ -232,6 +253,8 @@ def delete_imagecheck(icao24: str):
         resp = req.delete(url)
         if resp.status_code == 200:
             return resp.text == "OK"
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     return False
@@ -242,6 +265,8 @@ def get_imagechecks() -> List:
         resp = req.get(url)
         if resp.status_code == 200:
             return json.loads(resp.text)
+        else:
+            logging.error("PlaneDB API failed with %d '%s'" % (resp.status_code, resp.text))
     except req.exceptions.ConnectionError:
         logging.error("Failed to connect to planedb host %s" % hostname)
     return []
